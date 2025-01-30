@@ -6,24 +6,18 @@ export const protectRoute = async (req, res, next) => {
     const token = req.cookies?.jwt;
 
     if (!token) {
-      return res
-        .status(401)
-        .json({ message: 'Unauthorized - no token provided' });
+      return res.status(401).json({ message: 'Unauthorized - no token provided' });
     }
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      return res
-        .status(500)
-        .json({ message: 'Internal server error - missing JWT secret' });
+      return res.status(500).json({ message: 'Internal server error - missing JWT secret' });
     }
 
     const decoded = jwt.verify(token, secret);
 
     if (!decoded || !decoded.userId) {
-      return res
-        .status(401)
-        .json({ message: 'Unauthorized - Invalid token provided' });
+      return res.status(401).json({ message: 'Unauthorized - Invalid token provided' });
     }
 
     const user = await db.user.findUnique({
