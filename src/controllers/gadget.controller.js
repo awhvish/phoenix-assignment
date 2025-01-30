@@ -1,5 +1,18 @@
 import db from '../lib/db.js';
 
+const gadgetNames = [
+  'The Kraken',
+  'Nightangle',
+  'Phantom Viper',
+  'Ironclad Titan',
+  'Echo Pulse',
+  'Stealth Hawk',
+  'Nebula Rider',
+  'Vortex Spear',
+  'Quantum Fury',
+  'Rogue Shadow',
+];
+
 export const getGadgetController = async (req, res) => {
   try {
     const gadgets = await db.gadget.findMany();
@@ -10,42 +23,90 @@ export const getGadgetController = async (req, res) => {
 };
 
 export const postGadgetController = async (req, res) => {
-  const { name, status } = req.body;
-  if (
-    status != 'Available' &&
-    status != 'Deployed' &&
-    status != 'Destroyed' &&
-    status != 'Decommissioned'
-  ) {
+  let { name, status } = req.body;
+
+  if (status && !['Available', 'Deployed', 'Destroyed'].includes(status)) {
     return res.status(400).json({ message: 'Invalid status' });
+  }
+
+  if (!name) {
+    name = gadgetNames[Math.floor(Math.random() * gadgetNames.length)];
   }
 
   const success_probability = parseFloat((Math.random() * 100).toFixed(2));
 
-  existingGadget = await db.gadget.findUnique({ where: { name } });
+  const existingGadget = await db.gadget.findUnique({ where: { name } });
 
   if (existingGadget) {
-    res.status(400).json({ message: 'Gadget with this name already exists' });
-    return;
+    return res
+      .status(400)
+      .json({ message: 'Gadget with this name already exists' });
   }
 
+  const newGadget = await db.gadget.create({
+    data: {
+      name,
+      status: status || 'Available',
+      success_probability,
+    },
+  });
+
+  return res
+    .status(201)
+    .json({ message: 'Gadget created successfully!', gadget: newGadget });
+};
+
+export const updateGadgetController = async (req, res) => {
+  const { id, name, status } = req.body;
   try {
-    const newGadget = await db.gadget.create({
+    const gadget = await db.gadget.findUnique({ where: { id } });
+    if (!gadget) {
+      return res.status(404).json({ message: 'Gadget not found' });
+    }
+    const updatedGadget = await db.gadget.update({
+      where: { id },
       data: {
-        name,
-        status,
-        success_probability,
+        name: name || gadget.name,
+        status: status || gadget.status,
       },
     });
-
-    res.status(201).json(newGadget);
+    return res
+      .status(200)
+      .json({ message: 'Gadget updated successfully', gadget: updatedGadget });
   } catch (error) {
-    res.status(400).json({ message: 'Error creating gadget', error: error });
+    return res
+      .status(500)
+      .json({ message: 'Error updating gadget', error: error.message });
   }
 };
 
-export const updateGadgetController = async (req, res) => {};
+export const deleteGadgetController = async (req, res) => {
+  const { id } = req.params;
 
-export const deleteGadgetController = async (req, res) => {};
+  try {
+    const gadget = await db.gadget.findUnique({ where: { id } });
+
+    if (!gadget) {
+      return res.status(404).json({ message: 'Gadget not found' });
+    }
+
+    const updatedGadget = await db.gadget.update({
+      where: { id },
+      data: {
+        status: 'Decommissioned',
+        decommissionedAt: new Date(),
+      },
+    });
+
+    return res.status(200).json({
+      message: 'Gadget decommissioned successfully',
+      gadget: updatedGadget,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Error decommissioning gadget', error: error.message });
+  }
+};
 
 export const destroyGadgetController = async (req, res) => {};

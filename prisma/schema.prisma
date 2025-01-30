@@ -21,11 +21,15 @@ enum Status {
 }
 
 model Gadget {
-  id                  String   @id @default(cuid())
-  name                String   @unique
-  status              Status   @default(Available)
+  id                  String    @id @default(cuid())
+  name                String    @unique
+  status              Status    @default(Available)
   success_probability Float
-  createdAt           DateTime @default(now())
+  createdAt           DateTime  @default(now())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id])
+  decommissionedAt    DateTime?
+  destroyedAt         DateTime?
 }
 
 model User {
@@ -34,4 +38,5 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  gadgets   Gadget[]
 }

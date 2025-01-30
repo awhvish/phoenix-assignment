@@ -17,8 +17,8 @@ router.post('/', protectRoute, postGadgetController);
 
 router.patch('/', protectRoute, updateGadgetController);
 
-router.delete('/', protectRoute, deleteGadgetController);
+router.delete('/:id', protectRoute, deleteGadgetController);
 
-router.patch('/:id/self-destruct', destroyGadgetController);
+router.post('/:id/self-destruct', destroyGadgetController);
 
 export default router;
