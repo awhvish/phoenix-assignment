@@ -6,7 +6,7 @@ This project is an API for managing gadgets, built as part of an internship assi
 ## Features
 - CRUD operations for gadgets
 - Uses Prisma as ORM for database interactions
-- REST API built with Express.js and TypeScript
+- REST API built with Express.js 
 - Error handling and validation
 
 ## Tech Stack
