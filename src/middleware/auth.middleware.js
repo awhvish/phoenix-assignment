@@ -6,7 +6,7 @@ export const protectRoute = async (req, res, next) => {
     const token = req.cookies?.jwt;
 
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized - no token provided' });
+      return res.status(401).json({ message: 'Unauthorized - User not signed in' });
     }
 
     const secret = process.env.JWT_SECRET;
@@ -17,7 +17,7 @@ export const protectRoute = async (req, res, next) => {
     const decoded = jwt.verify(token, secret);
 
     if (!decoded || !decoded.userId) {
-      return res.status(401).json({ message: 'Unauthorized - Invalid token provided' });
+      return res.status(401).json({ message: 'Unauthorized - User not signed in' });
     }
 
     const user = await db.user.findUnique({
@@ -26,7 +26,7 @@ export const protectRoute = async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not signed in' });
+      return res.status(404).json({ message: 'Unauthorized - User not signed in' });
     }
 
     req.user = user;

@@ -71,7 +71,9 @@ export const signupController = async (req, res) => {
     if (!newUser) return res.status(500).json({ message: 'Error creating user' });
 
     generateToken(newUser.id, res);
-    return res.status(201).json({ newUser });
+    return res
+      .status(200)
+      .json({ message: 'Signup successful', user: { id: user.id, name: user.name, email: user.email } });
   } catch (error) {
     return res.status(400).json({ message: 'Validation failed:', error: error });
   }

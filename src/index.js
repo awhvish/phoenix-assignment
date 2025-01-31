@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.route.js';
 import gadgetRoutes from './routes/gadgets.route.js';
+import setupSwagger from './lib/swagger.js';
 
 // import cors from "cors";
 
@@ -23,6 +24,8 @@ app.use(cors({
 
 app.use('/auth', authRoutes);
 app.use('/gadgets', gadgetRoutes);
+
+setupSwagger(app);
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
