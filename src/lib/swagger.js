@@ -2,7 +2,6 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,7 +20,10 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' ? 'https://your-production-url' : 'http://localhost:5000',
+        url:
+          process.env.NODE_ENV === 'production'
+            ? 'https://phoenix-assignment.onrender.com'
+            : `http://localhost:${process.env.PORT}`,
         description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server',
       },
     ],
@@ -109,10 +111,15 @@ const swaggerUiOptions = {
 
 const setupSwagger = (app) => {
   app.use('/api-docs', (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
+    res.setHeader(
+      'Access-Control-Allow-Origin',
+      process.env.NODE_ENV === 'production'
+        ? 'https://phoenix-assignment.onrender.com'
+        : `http://localhost:${process.env.PORT}`
+    );
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
   });
 
