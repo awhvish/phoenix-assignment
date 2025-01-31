@@ -156,7 +156,7 @@ router.post('/signin', signinController);
 
 /**
  * @swagger
- * /auth/logout:
+ * /auth/signout:
  *   post:
  *     tags:
  *       - Authentication

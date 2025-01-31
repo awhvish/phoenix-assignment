@@ -11,6 +11,26 @@ const gadgetNames = [
   'Vortex Spear',
   'Quantum Fury',
   'Rogue Shadow',
+  'Stellar Blaze',
+  'Thunderstrike X',
+  'Shadow Serpent',
+  'Nova Striker',
+  'Tempest Fury',
+  'Viperfang',
+  'Solar Flare',
+  'Dark Horizon',
+  'Spectral Phantom',
+  'Iron Vortex',
+  'Echo Reaper',
+  'Celestial Wrath',
+  'Radiant Storm',
+  'Nebula Ghost',
+  'Blackout Enigma',
+  'Titan Reborn',
+  'Cosmic Titan',
+  'Stealth Seraph',
+  'Inferno Burst',
+  'Chaos Striker',
 ];
 
 export const getGadgetController = async (req, res) => {
@@ -46,7 +66,7 @@ export const postGadgetController = async (req, res) => {
   const existingGadget = await db.gadget.findUnique({ where: { name } });
 
   if (existingGadget) {
-    return res.status(400).json({ message: 'Gadget with this name already exists' });
+    return res.status(400).json({ message: 'You already have a gadget with this name' });
   }
 
   const newGadget = await db.gadget.create({
