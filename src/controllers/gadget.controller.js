@@ -80,23 +80,30 @@ export const postGadgetController = async (req, res) => {
   return res.status(201).json({ message: 'Gadget created successfully!', gadget: newGadget });
 };
 
-export const updateGadgetController = async (req, res) => {
-  const { id, name, status } = req.body;
+export const updateGadgetController = async (req, res, next) => {
   try {
+    const { id, name, status } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'ID is required' });
+    }
+
     const gadget = await db.gadget.findUnique({ where: { id } });
     if (!gadget) {
       return res.status(404).json({ message: 'Gadget not found' });
     }
+
     const updatedGadget = await db.gadget.update({
       where: { id },
       data: {
-        name: name || gadget.name,
-        status: status || gadget.status,
+        ...(name && { name }),
+        ...(status && { status }),
       },
     });
+
     return res.status(200).json({ message: 'Gadget updated successfully', gadget: updatedGadget });
   } catch (error) {
-    return res.status(500).json({ message: 'Error updating gadget', error: error.message });
+    next(error);
   }
 };
 
