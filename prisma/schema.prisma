@@ -21,7 +21,7 @@ enum Status {
 }
 
 model Gadget {
-  id                  String    @id @default(cuid())
+  id                  String    @id @default(uuid())
   name                String    @unique
   status              Status    @default(Available)
   success_probability Float

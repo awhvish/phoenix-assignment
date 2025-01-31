@@ -16,9 +16,9 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-/* TODO:
+/* TODO: for frontend
 app.use(cors({
-    origin: ["https://chat-app-e782.vercel.app/"],
+    origin: [""],
     credentials: true,
 }))*/
 
